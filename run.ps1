@@ -9,4 +9,11 @@ if (-not (Test-Path $venvActivate)) {
 }
 
 . $venvActivate
-python $launcher
+
+& python $launcher
+$exitCode = $LASTEXITCODE
+
+Write-Host ""
+Read-Host "Press Enter to close this window"
+
+exit $exitCode
