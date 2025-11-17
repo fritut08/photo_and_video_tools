@@ -17,7 +17,11 @@ def collect_pairs(directory: Path) -> List[Tuple[Path, Path]]:
     subtitles = {}
     for path in directory.glob(f"{pattern}{VIDEO_EXT}"):
         videos[path.stem.lower()] = path
+    for path in directory.glob(f"{pattern}{VIDEO_EXT.upper()}"):
+        videos[path.stem.lower()] = path
     for path in directory.glob(f"{pattern}{SUBTITLE_EXT}"):
+        subtitles[path.stem.lower()] = path
+    for path in directory.glob(f"{pattern}{SUBTITLE_EXT.upper()}"):
         subtitles[path.stem.lower()] = path
     matched = []
     for stem, video_path in videos.items():
