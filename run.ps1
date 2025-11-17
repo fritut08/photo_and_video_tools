@@ -9,5 +9,4 @@ if (-not (Test-Path $venvActivate)) {
 }
 
 . $venvActivate
-
 python $launcher

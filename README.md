@@ -8,8 +8,8 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 
 ## Prerequisites
 
-- Windows 10/11 with Python 3.9+ (for the Tk folder picker)
-- Docker Desktop (or any Docker daemon that can run Linux containers)
+- Python 3.9+ with Tkinter available (for the folder picker GUI)
+- Docker Engine capable of running Linux containers (e.g., Docker Desktop, Docker CE, Colima, etc.)
 
 ## One-time setup
 
@@ -26,23 +26,24 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 	python -m pip install -r requirements.txt
 	```
 
-3. Build the container image that packages `ffmpeg` and the merging script:
-
-	```powershell
-	docker build -t merge-subtitles .
-	```
-
 ## Everyday usage
 
-- Run `run_merge.ps1` (double-clickable) or execute the launcher manually:
+1. Activate the virtual environment:
 
-  ```powershell
-  python launch_merge_subtitles.py
-  ```
+	```powershell
+	.\.venv\Scripts\activate
+	```
 
-- A folder picker opens if `--directory` is omitted. Otherwise supply a Windows path via `--directory`.
-- The launcher mounts the chosen folder at `/work` in the container and forwards flags such as `--recursive`, `--suffix`, `--output-dir`, `--overwrite`, and `--dry-run`.
-- `--output-dir` must reside inside the selected folder so that the container can write to it.
-- Before running the container the launcher checks `docker info`; if Docker Desktop is not running you’ll get a friendly reminder instead of a cryptic CLI error.
-- Add `--print-command` to see the exact `docker run ...` invocation without starting the container (useful for testing).
+2. Run the launcher:
+
+	```powershell
+	python launch_merge_subtitles.py
+	```
+
+	Alternatively, double-click `run.ps1`, which simply activates the environment and starts the launcher for you.
+
+- A Tk folder picker always prompts you for the Windows folder containing matching `.mp4` and `.srt` files.
+- The launcher mounts the chosen folder at `/work` inside the container and muxes every top-level pair it finds.
+- Outputs land in `<selected folder>/videos_with_merged_subtitles` with the original filenames, overwriting any existing files.
+- The launcher checks `docker info` (so you get a friendly error if Docker isn’t running) and auto-builds `merge-subtitles:latest` whenever it’s missing; subsequent runs skip the build once the image exists.
 
