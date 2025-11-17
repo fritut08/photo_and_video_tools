@@ -42,7 +42,9 @@ def build_container_command(directory: Path) -> List[str]:
 def ensure_docker_ready() -> None:
     info = subprocess.run([
         "docker",
-        "info",
+        "version",
+        "--format",
+        "{{.Server.Version}}",
     ])
     if info.returncode != 0:
         raise RuntimeError(

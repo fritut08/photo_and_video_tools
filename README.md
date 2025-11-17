@@ -45,5 +45,5 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 - A Tk folder picker always prompts you for the Windows folder containing matching `.mp4` and `.srt` files.
 - The launcher mounts the chosen folder at `/work` inside the container and muxes every top-level pair it finds.
 - Outputs land in `<selected folder>/videos_with_merged_subtitles` with the original filenames, overwriting any existing files.
-- The launcher checks `docker info` (so you get a friendly error if Docker isn’t running) and auto-builds `merge-subtitles:latest` whenever it’s missing; subsequent runs skip the build once the image exists.
+- The launcher runs a quiet `docker version --format "{{.Server.Version}}"` check (so you get a friendly error if Docker isn’t running) and auto-builds `merge-subtitles:latest` whenever it’s missing; subsequent runs skip the build once the image exists.
 
