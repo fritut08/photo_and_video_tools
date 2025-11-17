@@ -20,7 +20,7 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 	.\.venv\Scripts\activate
 	```
 
-2. Install the Python dependency used by the scripts (currently just `rich`):
+2. Install the Python dependency used by the scripts (currently just `alive-progress`):
 
 	```powershell
 	python -m pip install -r requirements.txt

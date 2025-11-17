@@ -5,20 +5,11 @@ import subprocess
 from pathlib import Path
 from typing import List, Tuple
 
-from rich.console import Console
-from rich.progress import (
-    BarColumn,
-    Progress,
-    TaskProgressColumn,
-    TextColumn,
-    TimeRemainingColumn,
-)
+from alive_progress import alive_bar
 
 VIDEO_EXT = ".mp4"
 SUBTITLE_EXT = ".srt"
 OUTPUT_SUBDIR = "videos_with_merged_subtitles"
-
-console = Console(force_terminal=True)
 
 def collect_pairs(directory: Path) -> List[Tuple[Path, Path]]:
     pattern = "*"
@@ -48,17 +39,17 @@ def main() -> int:
         return 0
 
     failures = []
-    with Progress(
-        TextColumn("{task.description}"),
-        BarColumn(bar_width=None),
-        TaskProgressColumn(),
-        TimeRemainingColumn(),
-        console=console,
-        transient=False,
-        expand=True,
-    ) as progress:
-        task_id = progress.add_task("Merging subtitles", total=len(pairs))
+    with alive_bar(
+        len(pairs),
+        title="Merging subtitles",
+        bar="filling",
+        spinner="waves",
+        dual_line=True,
+        enrich_print=True,
+        force_tty=True,
+    ) as bar:
         for video_path, subtitle_path in pairs:
+            bar.text(f"{video_path.name}")
             output_path = output_dir / video_path.name
 
             command: List[str] = [
@@ -78,7 +69,6 @@ def main() -> int:
                 str(output_path),
             ]
 
-            console.print(f"Starting {video_path.name}")
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
@@ -90,24 +80,24 @@ def main() -> int:
                 for line in process.stdout:
                     clean_line = line.rstrip()
                     if clean_line:
-                        console.print(clean_line)
+                        print(clean_line)
             return_code = process.wait()
 
             if return_code != 0:
                 failures.append((video_path, f"ffmpeg exited with {return_code}"))
-                console.print(f"ffmpeg failed for {video_path.name}")
+                print(f"ffmpeg failed for {video_path.name}")
             else:
-                console.print(f"Merged {video_path.name}")
+                print(f"Merged {video_path.name}")
 
-            progress.advance(task_id)
+            bar()
 
     if failures:
-        console.print("\nCompleted with failures:")
+        print("\nCompleted with failures:")
         for video_path, reason in failures:
-            console.print(f" - {video_path.name}: {reason}")
+            print(f" - {video_path.name}: {reason}")
         return 1
 
-    console.print("\nAll subtitle tracks merged successfully.")
+    print("\nAll subtitle tracks merged successfully.")
     return 0
 
 
