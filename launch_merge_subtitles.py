@@ -12,6 +12,22 @@ from tkinter import filedialog
 DEFAULT_IMAGE = "merge-subtitles:latest"
 CONTAINER_WORKDIR = "/work"
 
+SOURCE_FILES = [
+    Path(__file__).parent / "Dockerfile",
+    Path(__file__).parent / "container" / "merge_subtitles.py",
+    Path(__file__).parent / "container" / "requirements.txt",
+]
+
+def compute_source_hash() -> str:
+    import hashlib
+    sha = hashlib.sha256()
+    for p in SOURCE_FILES:
+        if p.exists():
+            sha.update(p.read_bytes())
+        else:
+            sha.update(f"missing:{p}".encode())
+    return sha.hexdigest()
+
 
 def select_directory_gui(title: str) -> Optional[Path]:
     """Prompt the user for a directory using a Tk folder picker."""
@@ -28,6 +44,7 @@ def build_container_command(directory: Path) -> List[str]:
     command: List[str] = [
         "docker",
         "run",
+        "-it",  # allocate TTY so progress bar renders fully (keeps 's' suffix, ETA, etc.)
         "--rm",
         "-v",
         f"{directory}:/work",
@@ -53,15 +70,21 @@ def ensure_docker_ready() -> None:
 
 
 def ensure_image_exists() -> None:
-    inspect = subprocess.run(
-        ["docker", "image", "inspect", DEFAULT_IMAGE],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    if inspect.returncode == 0:
+    wanted_hash = compute_source_hash()
+    proc = subprocess.run(["docker", "image", "inspect", DEFAULT_IMAGE, "--format", "{{ index .Config.Labels \"source_hash\"}}"], capture_output=True, text=True)
+    existing_hash = proc.stdout.strip() if proc.returncode == 0 else ""
+    if existing_hash == wanted_hash:
         return
-    print(f"Docker image '{DEFAULT_IMAGE}' not found. Building it now...")
-    build = subprocess.run(["docker", "build", "-t", DEFAULT_IMAGE, str(Path(__file__).parent)])
+    if existing_hash:
+        print(f"Docker image hash mismatch (have {existing_hash[:12]}, want {wanted_hash[:12]}). Rebuilding...")
+    else:
+        print(f"Docker image '{DEFAULT_IMAGE}' missing or unlabeled. Building it now...")
+    build = subprocess.run([
+        "docker", "build",
+        "--label", f"source_hash={wanted_hash}",
+        "-t", DEFAULT_IMAGE,
+        str(Path(__file__).parent),
+    ])
     if build.returncode != 0:
         raise RuntimeError(f"Failed to build Docker image '{DEFAULT_IMAGE}'.")
 

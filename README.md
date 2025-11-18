@@ -1,49 +1,35 @@
 # merge_subtitles
 
-Double-clickable Windows helper that launches a Docker container containing `ffmpeg` and muxes matching `.mp4`/`.srt` pairs via:
+Host launcher + Dockerized ffmpeg workflow to mux matching `.mp4`/`.srt` pairs via:
 
 ```
 ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 ```
 
+## Project layout
+
+- `Dockerfile` — builds the runtime image
+- `launch_merge_subtitles.py` — host-side launcher with a Tk folder picker
+- `container/merge_subtitles.py` — script executed inside the container
+- `container/requirements.txt` — Python deps for the container
+
 ## Prerequisites
 
 - Python 3.9+ with Tkinter available (for the folder picker GUI)
-- Docker Engine capable of running Linux containers (e.g., Docker Desktop, Docker CE, Colima, etc.)
+- Docker Engine capable of running Linux containers (e.g., Docker Desktop)
 
-## One-time setup
 
-1. Create and activate a virtual environment:
 
-	```powershell
-	python -m venv .venv
-	.\.venv\Scripts\activate
-	```
+## Run
 
-2. Install the Python dependency used by the scripts (currently just `alive-progress`):
+Use the launcher to pick a folder and run the container:
 
-	```powershell
-	python -m pip install -r requirements.txt
-	```
+```powershell
+python launch_merge_subtitles.py
+```
 
-## Everyday usage
-
-1. Activate the virtual environment:
-
-	```powershell
-	.\.venv\Scripts\activate
-	```
-
-2. Run the launcher:
-
-	```powershell
-	python launch_merge_subtitles.py
-	```
-
-	Alternatively, double-click `run.ps1`, which simply activates the environment and starts the launcher for you.
-
-- A Tk folder picker always prompts you for the Windows folder containing matching `.mp4` and `.srt` files.
-- The launcher mounts the chosen folder at `/work` inside the container and muxes every top-level pair it finds.
-- Outputs land in `<selected folder>/videos_with_merged_subtitles` with the original filenames, overwriting any existing files.
-- The launcher runs a quiet `docker version --format "{{.Server.Version}}"` check (so you get a friendly error if Docker isn’t running) and auto-builds `merge-subtitles:latest` whenever it’s missing; subsequent runs skip the build once the image exists.
-
+What it does:
+- Prompts for a folder containing `.mp4` + `.srt` pairs
+- Mounts it to `/work` in the container
+- Writes outputs to `<selected>/videos_with_merged_subtitles`
+- Allocates `-it` for a real TTY so the progress bar shows ETA and time suffixes

@@ -42,11 +42,10 @@ def main() -> int:
     with alive_bar(
         len(pairs),
         title="Merging subtitles",
-        bar="filling",
+        bar="smooth",
         spinner="waves",
         dual_line=True,
         enrich_print=True,
-        force_tty=True,
     ) as bar:
         for video_path, subtitle_path in pairs:
             bar.text(f"{video_path.name}")
@@ -69,19 +68,8 @@ def main() -> int:
                 str(output_path),
             ]
 
-            process = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                bufsize=1,
-            )
-            if process.stdout is not None:
-                for line in process.stdout:
-                    clean_line = line.rstrip()
-                    if clean_line:
-                        print(clean_line)
-            return_code = process.wait()
+            result = subprocess.run(command)
+            return_code = result.returncode
 
             if return_code != 0:
                 failures.append((video_path, f"ffmpeg exited with {return_code}"))
