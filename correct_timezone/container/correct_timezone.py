@@ -67,11 +67,26 @@ def correct_timestamps_in_directory(directory: Path, timezone_difference: float)
                 str(image_file),
             ]
 
-            # Execute the ExifTool command
-            result = subprocess.run(command, capture_output=True, text=True)
-            if result.returncode != 0:
-                failures.append((image_file.name, f"exiftool exited with {result.returncode}"))
-                print(f"\nError processing {image_file.name}: {result.stderr}")
+            # Execute exiftool and stream output so the progress bar stays clean
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+            )
+            if process.stdout is not None:
+                for line in process.stdout:
+                    line = line.rstrip()
+                    if line:
+                        print(line)
+            return_code = process.wait()
+
+            if return_code != 0:
+                failures.append((image_file.name, f"exiftool exited with {return_code}"))
+                print(f"exiftool failed for {image_file.name}")
+            else:
+                print(f"Updated {image_file.name}")
 
             bar()
 
