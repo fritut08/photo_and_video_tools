@@ -1,3 +1,32 @@
 # cpy_geotag_from_xmp_to_photo_files
 
-This is a Python script to copy geotag information from sidecar `.xmp` files into the `.jpeg`/`.jpg` files with the same name. The script calls the [exiftool](https://github.com/exiftool/exiftool). This will therefore either have to be in the system's PATH variable or located in the same folder as this script. Furthermore, the scripts needs the `xmp2exif.args` file found [here](https://raw.githubusercontent.com/exiftool/exiftool/master/arg_files/xmp2exif.args) to be present in the directory of the exiftool.
+Host launcher + Dockerized exiftool workflow to copy geotag information from sidecar `.xmp` files into matching `.jpeg`/`.jpg` files.
+
+## Project layout
+
+- `Dockerfile` — builds the runtime image with exiftool and downloads `xmp2exif.args`
+- `launcher.py` — host-side launcher with a Tk folder picker
+- `container/cpy_geotag_from_xmp_to_photo_files.py` — script executed inside the container
+- `container/requirements.txt` — Python deps for the container (alive-progress)
+
+## Prerequisites
+
+- Python 3.9+ with Tkinter available (for the folder picker GUI)
+- Docker Engine capable of running Linux containers (e.g., Docker Desktop)
+
+## Run
+
+Use the launcher to pick a folder and run the container:
+
+```powershell
+python launcher.py
+```
+
+What it does:
+- Prompts for a folder containing `.xmp` + `.jpg`/`.jpeg` pairs
+- Downloads and uses `xmp2exif.args` inside the image (no host setup needed)
+- Writes updated JPEG copies to `<selected>/photos_with_copied_geotags` (non-destructive)
+- Streams exiftool output while showing a progress bar
+
+Notes:
+- The original standalone script required exiftool on the host and the `xmp2exif.args` file. This Dockerized version bundles that inside the image.
