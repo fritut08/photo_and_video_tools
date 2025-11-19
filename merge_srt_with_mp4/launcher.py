@@ -92,6 +92,10 @@ def ensure_image_exists() -> None:
 
 
 def main() -> int:
+    print("=" * 60)
+    print("  Merge SRT with MP4")
+    print("=" * 60)
+    print()
     print("Opening directory selection dialog...")
     directory = select_directory_gui("Select the folder containing MP4/SRT pairs")
     if directory is None:

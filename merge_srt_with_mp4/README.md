@@ -9,7 +9,7 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 ## Project layout
 
 - `Dockerfile` — builds the runtime image
-- `launch_merge_srt_with_mp4.py` — host-side launcher with a Tk folder picker
+- `launcher.py` — host-side launcher with a Tk folder picker
 - `container/merge_srt_with_mp4.py` — script executed inside the container
 - `container/requirements.txt` — Python deps for the container
 
@@ -23,7 +23,7 @@ ffmpeg -i infile.mp4 -i infile.srt -c copy -c:s mov_text outfile.mp4
 Use the launcher to pick a folder and run the container:
 
 ```powershell
-python launch_merge_srt_with_mp4.py
+python launcher.py
 ```
 
 What it does:
