@@ -67,6 +67,7 @@ def ensure_docker_ready() -> None:
         raise RuntimeError(
             "Docker is not available."
         )
+    print("Docker is available.")
 
 
 def ensure_image_exists() -> None:
@@ -87,27 +88,33 @@ def ensure_image_exists() -> None:
     ])
     if build.returncode != 0:
         raise RuntimeError(f"Failed to build Docker image '{DEFAULT_IMAGE}'.")
+    print(f"Docker image '{DEFAULT_IMAGE}' built successfully.")
 
 
 def main() -> int:
+    print("Opening directory selection dialog...")
     directory = select_directory_gui("Select the folder containing MP4/SRT pairs")
     if directory is None:
         print("No directory selected. Abort.")
         return 1
 
     directory = directory.expanduser().resolve()
+    print(f"Selected directory: {directory}")
     if not directory.exists() or not directory.is_dir():
         print(f"Provided path is not a directory: {directory}")
         return 1
 
     try:
+        print("Checking Docker availability...")
         ensure_docker_ready()
+        print("Ensuring Docker image is ready...")
         ensure_image_exists()
         command = build_container_command(directory)
     except RuntimeError as exc:
         print(exc)
         return 1
 
+    print(f"Launching container with directory: {directory}")
     return subprocess.run(command).returncode
 
 

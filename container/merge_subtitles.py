@@ -54,22 +54,30 @@ def main() -> int:
             command: List[str] = [
                 "ffmpeg",
                 "-hide_banner",
-                "-loglevel",
-                "warning",
+                "-loglevel", "warning",
                 "-y",
-                "-i",
-                str(video_path),
-                "-i",
-                str(subtitle_path),
-                "-c",
-                "copy",
-                "-c:s",
-                "mov_text",
+                "-i", str(video_path),
+                "-i", str(subtitle_path),
+                "-c", "copy",
+                "-c:s", "mov_text",
                 str(output_path),
             ]
 
-            result = subprocess.run(command)
-            return_code = result.returncode
+            # Stream ffmpeg output through Python so alive-progress can keep
+            # the bar anchored and print logs above it
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+            )
+            if process.stdout is not None:
+                for line in process.stdout:
+                    line = line.rstrip()
+                    if line:
+                        print(line)
+            return_code = process.wait()
 
             if return_code != 0:
                 failures.append((video_path, f"ffmpeg exited with {return_code}"))
