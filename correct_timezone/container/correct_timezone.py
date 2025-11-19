@@ -6,6 +6,8 @@ import subprocess
 from pathlib import Path
 from alive_progress import alive_bar
 
+OUTPUT_SUBDIR = "photos_with_corrected_timezone"
+
 
 def parse_timezone_input(input_str: str) -> float:
     try:
@@ -25,6 +27,10 @@ def correct_timestamps_in_directory(directory: Path, timezone_difference: float)
     if not image_files:
         print(f"No supported image files found in {directory}")
         return 0
+
+    # Ensure output directory exists
+    output_dir = directory / OUTPUT_SUBDIR
+    output_dir.mkdir(exist_ok=True)
 
     # Determine the operator for date tags based on the sign of timezone_difference
     date_operator = "+" if timezone_difference >= 0 else "-"
@@ -54,6 +60,7 @@ def correct_timestamps_in_directory(directory: Path, timezone_difference: float)
         for image_file in image_files:
             bar.text(f"{image_file.name}")
             # Construct the ExifTool command to adjust date, timezone, and "SonyDateTime" tags
+            output_path = output_dir / image_file.name
             command = [
                 "exiftool",
                 f'-DateTimeOriginal{date_operator}={time_offset}',
@@ -63,7 +70,7 @@ def correct_timestamps_in_directory(directory: Path, timezone_difference: float)
                 f'-OffsetTime+={timezone_offset}',
                 f'-OffsetTimeOriginal+={timezone_offset}',
                 f'-OffsetTimeDigitized+={timezone_offset}',
-                "-overwrite_original",  # Don't create backup files
+                "-o", str(output_path),  # Write corrected copy to output directory
                 str(image_file),
             ]
 
@@ -86,7 +93,7 @@ def correct_timestamps_in_directory(directory: Path, timezone_difference: float)
                 failures.append((image_file.name, f"exiftool exited with {return_code}"))
                 print(f"exiftool failed for {image_file.name}")
             else:
-                print(f"Updated {image_file.name}")
+                print(f"Wrote corrected {output_path.name}")
 
             bar()
 
