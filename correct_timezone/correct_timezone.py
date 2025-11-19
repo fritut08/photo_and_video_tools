@@ -1,6 +1,6 @@
 import os
 import subprocess
-from tqdm import tqdm
+from alive_progress import alive_bar
 import tkinter as tk
 from tkinter import filedialog
 
@@ -34,22 +34,25 @@ def correct_timestamps_in_directory(directory_path, timezone_difference):
     # Create the timezone_offset string in the format '+HH:MM' or '-HH:MM' for timezone tags
     timezone_offset = f'{date_operator}{int(hours):02d}:{int(minutes):02d}'
 
-    # Use tqdm to display a progress bar
-    for image_file in tqdm(image_files, desc="Processing files", unit="file"):
-        # Construct the ExifTool command to adjust date, timezone, and "SonyDateTime" tags
-        exiftool_command = (
-            f'exiftool -DateTimeOriginal{date_operator}="{time_offset}" '
-            f'-CreateDate{date_operator}="{time_offset}" '
-            f'-ModifyDate{date_operator}="{time_offset}" '
-            f'-SonyDateTime{date_operator}="{time_offset}" '
-            f'-OffsetTime+="{timezone_offset}" '
-            f'-OffsetTimeOriginal+="{timezone_offset}" '
-            f'-OffsetTimeDigitized+="{timezone_offset}" '
-            f'"{os.path.join(directory_path, image_file)}"'
-        )
+    # Use alive-progress to display a progress bar
+    with alive_bar(len(image_files), title="Correcting timestamps", bar="smooth", spinner="waves", dual_line=True, enrich_print=True) as bar:
+        for image_file in image_files:
+            bar.text(f"{image_file}")
+            # Construct the ExifTool command to adjust date, timezone, and "SonyDateTime" tags
+            exiftool_command = (
+                f'exiftool -DateTimeOriginal{date_operator}="{time_offset}" '
+                f'-CreateDate{date_operator}="{time_offset}" '
+                f'-ModifyDate{date_operator}="{time_offset}" '
+                f'-SonyDateTime{date_operator}="{time_offset}" '
+                f'-OffsetTime+="{timezone_offset}" '
+                f'-OffsetTimeOriginal+="{timezone_offset}" '
+                f'-OffsetTimeDigitized+="{timezone_offset}" '
+                f'"{os.path.join(directory_path, image_file)}"'
+            )
 
-        # Execute the ExifTool command
-        subprocess.run(exiftool_command, shell=True)
+            # Execute the ExifTool command
+            subprocess.run(exiftool_command, shell=True)
+            bar()
 
 if __name__ == "__main__":
     # Select the directory using the GUI
