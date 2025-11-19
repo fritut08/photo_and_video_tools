@@ -1,4 +1,4 @@
-"""Host launcher for the Dockerized merge_subtitles container."""
+"""Host launcher for the Dockerized merge_srt_with_mp4 container."""
 from __future__ import annotations
 
 import subprocess
@@ -9,12 +9,12 @@ from typing import List, Optional
 import tkinter as tk
 from tkinter import filedialog
 
-DEFAULT_IMAGE = "merge-subtitles:latest"
+DEFAULT_IMAGE = "merge-srt-with-mp4:latest"
 CONTAINER_WORKDIR = "/work"
 
 SOURCE_FILES = [
     Path(__file__).parent / "Dockerfile",
-    Path(__file__).parent / "container" / "merge_subtitles.py",
+    Path(__file__).parent / "container" / "merge_srt_with_mp4.py",
     Path(__file__).parent / "container" / "requirements.txt",
 ]
 

@@ -7,6 +7,6 @@ RUN apt-get update \
 WORKDIR /app
 COPY container/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY container/merge_subtitles.py .
+COPY container/merge_srt_with_mp4.py .
 
-ENTRYPOINT ["python", "/app/merge_subtitles.py"]
+ENTRYPOINT ["python", "/app/merge_srt_with_mp4.py"]
