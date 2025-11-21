@@ -4,6 +4,9 @@ A collection of Python utilities for managing and processing photos and videos.
 
 ## Tools
 
+### add_geotag_to_dji_drone_video
+Extracts GPS coordinates from DJI drone SRT sidecar files and embeds them into MP4 video files.
+
 ### correct_timezone
 Corrects timezone information in photo and video metadata.
 
