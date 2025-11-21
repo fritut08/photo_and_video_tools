@@ -27,6 +27,3 @@ What it does:
 - Downloads and uses `xmp2exif.args` inside the image (no host setup needed)
 - Writes updated JPEG copies to `<selected>/photos_with_copied_geotags` (non-destructive)
 - Streams exiftool output while showing a progress bar
-
-Notes:
-- The original standalone script required exiftool on the host and the `xmp2exif.args` file. This Dockerized version bundles that inside the image.
