@@ -6,7 +6,7 @@ from alive_progress import alive_bar
 
 WORK_DIR = Path("/work")
 OUTPUT_DIR = WORK_DIR / "photos_with_copied_geotags"
-ARGS_FILE = "/app/xmp2exif.args"
+ARGS_FILE = "/exiftool_args_file/xmp2exif.args"
 
 if __name__ == "__main__":
 
