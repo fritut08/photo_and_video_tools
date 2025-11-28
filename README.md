@@ -2,29 +2,69 @@
 
 A collection of Python utilities for managing and processing photos and videos.
 
-## Tools
+## Quick Start
 
-### add_geotag_to_dji_drone_video
-Extracts GPS coordinates from DJI drone SRT sidecar files and embeds them into MP4 video files.
+**Option 1: Auto-setup script (recommended)**
 
-### correct_timezone
-Corrects timezone information in photo and video metadata.
+```powershell
+.\run.ps1
+```
 
-### cpy_geotag_from_xmp_to_photo_files
-Copies geolocation tags from XMP sidecar files to the corresponding photo files.
+This PowerShell script automatically creates the virtual environment, installs dependencies, and runs the launcher which will let the user select the tool.
+The tool then either performs the task itself or takes care of preparing and calling the Docker container which performs the task.
 
-### delete_unmatched_raw_files
-Deletes RAW photo files that don't have a corresponding processed image.
+**Option 2: Manual setup**
 
-### merge_srt_with_mp4
-Dockerized ffmpeg workflow to merge SRT subtitle files with MP4 video files.
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python launcher.py
+```
 
-### sort_images_into_folders
-Organizes images into folders based on their metadata or other criteria.
+## Architecture
 
-## Requirements
+This repository uses a **shared container architecture** to reduce duplication:
 
-Each tool has its own dependencies. Refer to the individual tool's README for specific requirements.
+- **`containers/`** - Shared Docker base images (exiftool, ffmpeg, etc.)
+- **`tools/`** - Individual tool implementations with their own scripts
+- **`launcher.py`** - Central menu-based launcher for all tools
+
+Most tools use Docker containers with base environments mounted dynamically at runtime. Tool-specific scripts are located in their respective `tools/*/container/` directories.
+
+## Available Tools
+
+### 1. Sort Images into Folders
+Organize images by date into year/month folder structure.
+
+### 2. Remove Unmatched RAW Files
+Remove RAW files (.arw or .dng) that don't have corresponding JPEG counterparts.
+
+### 3. Add Timezone Information
+Add custom timezone to photos' tags
+
+### 4. Shift Time and Timezone
+Adjust photo time and timezone tags. Useful when camera was set to wrong timezone.
+
+### 5. Copy Geotags from XMP to JPEG files
+Copy GPS data from XMP sidecar files to JPEG files.
+
+### 6. Merge SRT with MP4
+Merge SRT subtitles files directly into MP4 video files as subtitle tracks.
+
+### 7. Add Geotag to DJI Drone Video
+Extract GPS coordinates from DJI drone SRT files and embed into MP4 videos.
+
+## Prerequisites
+
+- **Python 3.10+** with Tkinter (for GUI folder pickers)
+- **Docker Desktop** (for containerized tools)
+
+## Dependencies
+
+Python dependencies are managed at the repository level in `requirements.txt`:
+
+Install with: `pip install -r requirements.txt`
 
 ## Acknowledgments
 

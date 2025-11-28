@@ -1,3 +1,3 @@
-[submodule "tools/add_geotag_to_dji_drone_video/container/DJI_SRT_Parser"]
-	path = tools/add_geotag_to_dji_drone_video/container/DJI_SRT_Parser
+[submodule "photo_video_tools/containers/exiftool-nodejs/DJI_SRT_Parser"]
+	path = photo_video_tools/containers/exiftool-nodejs/DJI_SRT_Parser
 	url = https://github.com/JuanIrache/DJI_SRT_Parser.git
