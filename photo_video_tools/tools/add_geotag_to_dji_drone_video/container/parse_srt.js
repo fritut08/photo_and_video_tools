@@ -1,4 +1,4 @@
-const DJISRTParser = require('/app/parser/index.js');
+const DJISRTParser = require('/parser/index.js');
 const fs = require('fs');
 
 if (process.argv.length !== 3) {

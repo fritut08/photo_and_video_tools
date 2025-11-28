@@ -13,8 +13,9 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends exiftool nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
 # Copy parser with dependencies
-COPY --from=parser-build /parser/node_modules ./parser/node_modules
-COPY DJI_SRT_Parser ./parser
+WORKDIR /parser
+COPY --from=parser-build /parser/node_modules ./node_modules
+COPY DJI_SRT_Parser .
+
+WORKDIR /app
