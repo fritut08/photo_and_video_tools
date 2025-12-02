@@ -59,9 +59,9 @@ if __name__ == "__main__":
 				"exiftool",
 				'-m', # ignore maker notes offset warning
 				f'-DateTimeOriginal{date_operator}={timezone_offset_abs}',
-				f'-CreateDate{date_operator}={timezone_offset}',
-				f'-ModifyDate{date_operator}={timezone_offset}',
-				f'-SonyDateTime{date_operator}={timezone_offset}',
+				f'-CreateDate{date_operator}={timezone_offset_abs}',
+				f'-ModifyDate{date_operator}={timezone_offset_abs}',
+				f'-SonyDateTime{date_operator}={timezone_offset_abs}',
 				f'-OffsetTime+={timezone_offset}',
 				f'-OffsetTimeOriginal+={timezone_offset}',
 				f'-OffsetTimeDigitized+={timezone_offset}',
