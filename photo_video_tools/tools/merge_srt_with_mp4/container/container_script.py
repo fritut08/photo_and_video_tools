@@ -77,6 +77,7 @@ if __name__ == "__main__":
                 "-y",
                 "-i", str(temp_input),
                 "-i", str(srt_file),
+                "-map_metadata", "0",
                 "-c", "copy",
                 "-c:s", "mov_text",
                 str(temp_output),
