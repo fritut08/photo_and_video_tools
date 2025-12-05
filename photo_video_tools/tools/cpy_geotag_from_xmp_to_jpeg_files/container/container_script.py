@@ -56,8 +56,9 @@ if __name__ == "__main__":
                 "exiftool",
                 '-m', # ignore maker notes offset warning
                 "-tagsfromfile", str(xmp_path),
-                "-location:all",
+                "-location:all",          # copy only location-related tags from XMP
                 "-@", ARGS_FILE,
+                "--Orientation",          # after args file: ignore orientation from XMP
                 "-o", str(output_path),
                 str(jpeg_path),
             ]
