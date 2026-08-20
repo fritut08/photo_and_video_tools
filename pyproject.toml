@@ -1,0 +1,16 @@
+[project]
+name = "photo-and-video-tools"
+version = "0.1.0"
+description = "A collection of Python utilities for managing and processing photos and videos."
+readme = "README.md"
+authors = [
+    { name = "fritut08", email = "f.tuttas1996@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "alive-progress>=3.3.0",
+    "exifread>=3.5.1",
+]
+
+[tool.uv]
+package = false

@@ -16,10 +16,8 @@ The tool then either performs the task itself or takes care of preparing and cal
 **Option 2: Manual setup**
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python launcher.py
+uv sync
+uv run python launcher.py
 ```
 
 ## Architecture
@@ -57,14 +55,14 @@ Extract GPS coordinates from DJI drone SRT files and embed into MP4 videos.
 
 ## Prerequisites
 
-- **Python 3.10+** with Tkinter (for GUI folder pickers)
+- **[uv](https://docs.astral.sh/uv/)** — installs and manages the required Python version automatically, including Tkinter (for GUI folder pickers)
 - **Docker Desktop** (for containerized tools)
 
 ## Dependencies
 
-Python dependencies are managed at the repository level in `requirements.txt`:
+Python dependencies are managed at the repository level in `pyproject.toml` / `uv.lock`.
 
-Install with: `pip install -r requirements.txt`
+Install with: `uv sync`
 
 ## Acknowledgments
 
