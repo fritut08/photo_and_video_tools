@@ -35,8 +35,8 @@ Most tools use Docker containers with base environments mounted dynamically at r
 ### 1. Sort Images into Folders
 Organize images by date into year/month folder structure.
 
-### 2. Remove Unmatched RAW Files
-Remove RAW files (.arw or .dng) that don't have corresponding JPEG counterparts.
+### 2. Remove Unmatched Files
+Move files (e.g. RAW) that don't have a corresponding file (e.g. JPEG) with the same name in a reference folder to a subfolder. File extensions for both the template and target side are entered interactively, so this also works the other way round (e.g. removing JPEGs without a matching RAW).
 
 ### 3. Add Timezone Information
 Add custom timezone to photos' tags
