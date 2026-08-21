@@ -26,7 +26,7 @@ class ShiftTimeAndTimezoneTool(ToolBase):
         # Get timezone offset from user
         timezone_offset = None
         while timezone_offset is None:
-            user_input = input("Enter the timezone information as an offset from UTC (e.g., -9:00, 5:30): ")
+            user_input = input("Enter the time offset (e.g., -9:00, 5:30): ")
             timezone_offset = parse_timezone_input(user_input)
             if timezone_offset is None:
                 print("Invalid timezone offset format. Please try again.")
