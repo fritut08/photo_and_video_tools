@@ -52,7 +52,8 @@ def select_directory_gui(title: str) -> Path | None:
     print(title + "...")
     root = tk.Tk()
     root.withdraw()
-    selected = filedialog.askdirectory(title=title)
+    root.attributes("-topmost", True)
+    selected = filedialog.askdirectory(title=title, parent=root)
     root.destroy()
     if not selected:
         return None
